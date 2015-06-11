@@ -3,7 +3,8 @@
 PPMC::~PPMC(void){}
 
 /* create Tree */ 
-PPMC::PPMC(void){
+PPMC::PPMC(void)
+{
 
 	Node *root = new Node("");
 	Node *newESC = new Node("ESC");
