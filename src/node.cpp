@@ -11,10 +11,26 @@ Node::Node(std::string s)
 	childTotalFreq = 0;
 }
 
+std::map<std::string, Node*> * Node::getChildren(void)
+{
+	return &children;
+}
+
 void Node::setChildren(std::string s, Node * newNode)
 {
 	children[s] = newNode;
 }
+
+std::string Node::getName(void)
+{
+	return name;
+}
+
+int Node::getFrequency(void)
+{
+	return frequency;
+}
+
 
 std::string Node::updateContext(std::string ctx)
 {

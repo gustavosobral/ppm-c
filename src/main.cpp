@@ -11,8 +11,6 @@ int main(int argc, char * argv[], char * envp[])
 	Tree->getRoot()->updateChildren("B", "A", 1);
 	Tree->getRoot()->updateChildren("R", "AB", 2);
 	
-	Node *newNode = new Node("hello");
-	//std::clog << newNode->getFrequency() << std::endl;
 
 //	while(true){
 /*
