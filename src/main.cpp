@@ -2,32 +2,46 @@
 #include "ppmc.hpp"
 
 #include <iostream>
+#include <exception>
 
 int main(int argc, char * argv[], char * envp[])
 {
 	PPMC *Tree = new PPMC();
 
-	Tree->getRoot()->updateChildren("A", "", 0);
+	Node *root = Tree->getRoot();
 
-	Tree->getRoot()->updateChildren("B", "A", 1);
-	Tree->getRoot()->updateChildren("B", "", 0);
+	std::string word = "ABRACADABRA";
+	int k = 2;
+	int i, j;
+	int size_word =  word.size();
 
-	Tree->getRoot()->updateChildren("R", "AB", 2);
-	Tree->getRoot()->updateChildren("R", "B", 1);
-	Tree->getRoot()->updateChildren("R", "", 0);
+	std::string str, ctx;
 
-	Tree->getRoot()->updateChildren("A", "BR", 2);
-	Tree->getRoot()->updateChildren("A", "R", 1);
-	Tree->getRoot()->updateChildren("A", "", 0);
+
+	for (j = 0; j < size_word; j++)
+	{
+		for (i = k; i > 0; i--)
+		{
+			str = word.substr(j,1);
+			
+			if ( j-i >= 0 ) ctx = word.substr(j-i,i);
+			else continue;
+			
+			std::clog << "(" << str << "," << ctx << "," << i << ") - ";
+			root->updateChildren(str, ctx, i);
+		}
+
+		std::clog << "(" << str << ", ," << i << ")" << std::endl;
+		root->updateChildren(str, "", i);
+	}
+
 
 	std::clog << "updates finished! " << std::endl;
 	 
-	Node *my_root = Tree->getRoot();
-
-	for (std::map<std::string, Node*>::iterator it = my_root->getChildren()->begin(); it != my_root->getChildren()->end(); it++)
+	for (std::map<std::string, Node*>::iterator it = root->getChildren()->begin(); it != root->getChildren()->end(); it++)
 	{
-		std::clog << my_root->getName() << " - " << it->first << ":" << it->second->getName() << std::endl;
-		Node *cnode = (*my_root->getChildren())[it->first];
+		std::clog << root->getName() << " - " << it->first << ":" << it->second->getName() << std::endl;
+		Node *cnode = (*root->getChildren())[it->first];
 			
 		for (std::map<std::string, Node*>::iterator it2 = cnode->getChildren()->begin(); it2 != cnode->getChildren()->end(); it2++)
 		{

@@ -49,7 +49,7 @@ std::string Node::updateContext(std::string ctx)
 	return new_str;	
 }
 
-void Node::insertChild(std::string str, std::string ctx)
+void Node::insertChild(std::string str)
 {
 
 	std::string new_name = name + str;
@@ -79,8 +79,9 @@ void Node::updateChildren(std::string str, std::string ctx, int k)
 
 	else 
 	{
-		if (!children.count(str)) {
-			insertChild(str, ctx);
+		if (!children.count(str)) 
+		{
+			insertChild(str);
 		}
 
 		else 
