@@ -91,40 +91,4 @@ void Node::updateChildren(std::string str, std::string ctx, int k)
 		}
 	}
 
-/*void Node::insertChild(std::string str)
-{
-	Node *newNode = new Node(str);
-
-	newNode->frequency += 1;
-	childTotalFreq += 1;
-	children["ESC"]->frequency += 1;
-
-	Node *newESC = new Node("ESC");
-	newNode->children["ESC"] = newESC;
-
-	children[str] = newNode;
-}
-
-void Node::updateChildren(std::string str, std::string ctx, int k)
-{
-	if (!children.count(str)) insertChild(str);
-
-	else 
-	{
-		Node *cnode = children[str];
-		cnode->frequency += 1;
-		childTotalFreq += 1;
-	}
-
-	if (k == 0) return;
-
-	std::clog << "andei na updateChildren" << std::endl;
-
-	Node *cnode = children[ctx];
-	cnode->updateChildren(str, updateContext(ctx) ,k-1);
-
-	
-}*/
-
-		
 }
