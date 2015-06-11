@@ -13,6 +13,7 @@ private:
 public:
 	PPMC(void);
 	~PPMC(void);
+	Node * getRoot(void);
 };
 
 #endif
