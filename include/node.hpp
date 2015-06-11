@@ -4,6 +4,8 @@
 #include <map>			// std::map
 #include <string>		// std::string
 
+#include <iostream>
+
 class Node {
 private:
 	std::string name;
@@ -22,9 +24,9 @@ public:
 	std::string getName(void);
 
 	int getFrequency(void);
-	
+
 	std::string updateContext(std::string ctx);
-	void insertChild(std::string str);
+	void insertChild(std::string str, std::string ctx);
 	void updateChildren(std::string str, std::string ctx, int k);
 };
 
