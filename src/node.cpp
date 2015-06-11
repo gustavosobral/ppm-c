@@ -20,6 +20,9 @@ std::string Node::updateContext(std::string ctx)
 {
 	int i;
 	int N = ctx.size() - 1;
+
+	if (N < 1) return NULL;
+
 	char new_ctx[N];
 	std::string new_str;
 
@@ -46,24 +49,19 @@ void Node::insertChild(std::string str)
 
 void Node::updateChildren(std::string str, std::string ctx, int k)
 {
-	if (k == 0)
-	{
-		if (children[str] == NULL) insertChild(str);
+	if (children[str] == NULL) insertChild(str);
 
-		else 
-		{
-			Node *cnode = children[str];
-			cnode->frequency += 1;
-			childTotalFreq += 1;
-		}
-	}
 	else 
 	{
-		Node *cnode = children[ctx];
-
-		insertChild(ctx);
-
-		cnode->updateChildren(str, updateContext(ctx) ,k-1);
-
+		Node *cnode = children[str];
+		cnode->frequency += 1;
+		childTotalFreq += 1;
 	}
+
+	if (k == 0) return;
+
+	Node *cnode = children[ctx];
+	cnode->updateChildren(str, updateContext(ctx) ,k-1);
+
+	
 }
