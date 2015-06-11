@@ -11,3 +11,9 @@ PPMC::PPMC(void)
 
 	root->setChildren("ESC", newESC); 
 }
+
+
+Node * PPMC::getRoot(void)
+{
+	return root;
+}
