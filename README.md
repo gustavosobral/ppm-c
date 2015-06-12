@@ -22,8 +22,9 @@ For build and run this project you will need these requirements satisfied:
 
 ## References
 
-[1] - https://sites.google.com/site/derzuomaia/disciplinas/introducao-a-teoria-da-informacao <br> (Portuguese)
-[2] - http://www.stringology.org/DataCompression/ppmc/index_en.html
+[1] - https://sites.google.com/site/derzuomaia/disciplinas/introducao-a-teoria-da-informacao (Portuguese) <br> 
+[2] - http://www.stringology.org/DataCompression/ppmc/index_en.html <br>
+[3] - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.9.2220&rep=rep1&type=pdf
 
 - - -
 ## Make
