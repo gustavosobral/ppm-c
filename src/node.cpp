@@ -1,6 +1,10 @@
 #include "node.hpp"
 
-Node::Node(void){}
+Node::Node(void)
+{	
+	frequency = 0;
+	childTotalFreq = 0;
+}
 
 Node::~Node(void){}
 
@@ -31,23 +35,21 @@ int Node::getFrequency(void)
 	return frequency;
 }
 
-
-std::string Node::updateContext(std::string ctx)
+int Node::getK(void)
 {
-	int i;
-	int N = ctx.size() - 1;
-
-	if (N < 1) return "";
-
-	char new_ctx[N];
-	std::string new_str;
-
-	for (i = 0; i < N; i++) new_ctx[i] = ctx[i+1];
-
-	new_str = new_ctx;
-
-	return new_str;	
+	return K;
 }
+
+void Node::setK(int k)
+{
+	K = k;
+}
+
+int Node::getChildTotalFreq()
+{
+	return childTotalFreq;
+}
+
 
 void Node::insertChild(std::string str)
 {
@@ -57,8 +59,9 @@ void Node::insertChild(std::string str)
 	Node *newNode = new Node(new_name);
 
 	newNode->frequency += 1;
-	childTotalFreq += 1;
+	childTotalFreq += 2;
 	children["ESC"]->frequency += 1;
+	newNode->K = new_name.size();
 
 	Node *newESC = new Node("ESC");
 	newNode->children["ESC"] = newESC;
@@ -73,7 +76,7 @@ void Node::updateChildren(std::string str, std::string ctx, int k)
 	{
 		std::string new_ctx = ctx.substr(0,1);	
 		Node *cnode = children[new_ctx];
-		cnode->updateChildren(str, updateContext(ctx), k-1);
+		cnode->updateChildren(str, ctx.substr(1, ctx.size() - 1 ), k-1);
 
 	}
 
@@ -91,5 +94,4 @@ void Node::updateChildren(std::string str, std::string ctx, int k)
 			childTotalFreq += 1;
 		}
 	}
-
 }
