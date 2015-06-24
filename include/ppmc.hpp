@@ -5,15 +5,24 @@
 
 #include <map>			// std::map
 #include <string>		// std::string
+#include <cmath>		// std::string
 
 class PPMC {
 private:
 	Node * root;
+	int alphabet_size;
+	std::map<char,bool> char_map;
 
 public:
 	PPMC(void);
+	PPMC(int);
 	~PPMC(void);
 	Node * getRoot(void);
+	int getAlphabet_size(void);
+	void setAlphabet_size(int);
+
+	void updateTree(Node * cnode, std::string str, std::string ctx);
+	double getProb(Node * cnode, std::string str, std::string ctx, int level, int k);
 };
 
 #endif
