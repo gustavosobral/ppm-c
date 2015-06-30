@@ -43,44 +43,43 @@ void PPMC::updateTree(Node * cnode, std::string str, std::string ctx)
 	int i;
 	
 	for (i = ctx.size(); i > 0; i--)
-	{		
+	{
 		cnode->updateChildren(str, ctx, i);
 		ctx = ctx.substr(1,i-1);
 	}
 	cnode->updateChildren(str, "", i);
 }
 
-
 double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, int k)
 {
-	if (cnode->getName() == ctx) 
+	if (cnode->getName() == ctx)
 	{
-		if (!(*cnode->getChildren()).count(str)) 
+		if (!(*cnode->getChildrens()).count(str))
 		{
 			if (ctx == "")
-			{ 
+			{
 				return (double)1/alphabet_size--;
-			} 
+			}
 			else
 			{
 				std::string new_ctx = ctx.substr(1, --k);
 				return getProb(root, str, new_ctx, 0, k);
 			}
-		} 
-		else 
+		}
+		else
 		{
-			int freq = (*cnode->getChildren())[str]->getFrequency();
+			int freq = (*cnode->getChildrens())[str]->getFrequency();
 			int total = cnode->getChildTotalFreq();
 			return (double)freq/total;
 		}
-	} 
-	else 
+	}
+	else
 	{
 		std::string child = ctx.substr(level,1);
-		if (!(*cnode->getChildren()).count(child)) return 0; 
-		else 
+		if (!(*cnode->getChildrens()).count(child)) return 0;
+		else
 		{
-			Node *new_node = (*cnode->getChildren())[child];
+			Node *new_node = (*cnode->getChildrens())[child];
 			return getProb(new_node, str, ctx, ++level, k);
 		}
 	}

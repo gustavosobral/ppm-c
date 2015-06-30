@@ -11,7 +11,7 @@ private:
 	std::string name;
 	int frequency;
 	int childTotalFreq;
-	std::map <std::string, Node*> children;
+	std::map <std::string, Node*> childrens;
 	int K; 
 
 public:
@@ -19,7 +19,7 @@ public:
 	~Node(void);
 	Node(std::string s);
 
-	std::map<std::string, Node*> * getChildren(void);
+	std::map<std::string, Node*> * getChildrens(void);
 	void setChildren(std::string s, Node * newNode);
 
 	int getK(void);
@@ -33,6 +33,7 @@ public:
 	std::string updateContext(std::string ctx);
 	void insertChild(std::string str);
 	void updateChildren(std::string str, std::string ctx, int k);
+	void updateFrequency(void);
 };
 
 #endif
