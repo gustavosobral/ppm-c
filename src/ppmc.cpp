@@ -54,7 +54,7 @@ double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, 
 {
 	if (cnode->getName() == ctx)
 	{
-		if (!(*cnode->getChildrens()).count(str))
+		if (!(*cnode->getChildren()).count(str))
 		{
 			if (ctx == "")
 			{
@@ -68,7 +68,7 @@ double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, 
 		}
 		else
 		{
-			int freq = (*cnode->getChildrens())[str]->getFrequency();
+			int freq = (*cnode->getChildren())[str]->getFrequency();
 			int total = cnode->getChildTotalFreq();
 			return (double)freq/total;
 		}
@@ -76,10 +76,10 @@ double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, 
 	else
 	{
 		std::string child = ctx.substr(level,1);
-		if (!(*cnode->getChildrens()).count(child)) return 0;
+		if (!(*cnode->getChildren()).count(child)) return 0;
 		else
 		{
-			Node *new_node = (*cnode->getChildrens())[child];
+			Node *new_node = (*cnode->getChildren())[child];
 			return getProb(new_node, str, ctx, ++level, k);
 		}
 	}

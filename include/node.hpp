@@ -11,15 +11,15 @@ private:
 	std::string name;
 	int frequency;
 	int childTotalFreq;
-	std::map <std::string, Node*> childrens;
-	int K; 
+	std::map <std::string, Node*> children;
+	int K;
 
 public:
 	Node(void);
 	~Node(void);
 	Node(std::string s);
 
-	std::map<std::string, Node*> * getChildrens(void);
+	std::map<std::string, Node*> * getChildren(void);
 	void setChildren(std::string s, Node * newNode);
 
 	int getK(void);

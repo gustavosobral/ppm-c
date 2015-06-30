@@ -1,7 +1,7 @@
 #include "node.hpp"
 
 Node::Node(void)
-{	
+{
 	frequency = 0;
 	childTotalFreq = 0;
 }
@@ -9,20 +9,20 @@ Node::Node(void)
 Node::~Node(void){}
 
 Node::Node(std::string s)
-{	
+{
 	name = s;
 	frequency = 0;
 	childTotalFreq = 0;
 }
 
-std::map<std::string, Node*> * Node::getChildrens(void)
+std::map<std::string, Node*> * Node::getChildren(void)
 {
-	return &childrens;
+	return &children;
 }
 
 void Node::setChildren(std::string s, Node * newNode)
 {
-	childrens[s] = newNode;
+	children[s] = newNode;
 }
 
 std::string Node::getName(void)
@@ -64,35 +64,34 @@ void Node::insertChild(std::string str)
 
 	newNode->frequency += 1;
 	childTotalFreq += 2;
-	childrens["ESC"]->frequency += 1;
+	children["ESC"]->frequency += 1;
 	newNode->K = new_name.size();
 
 	Node *newESC = new Node("ESC");
-	newNode->childrens["ESC"] = newESC;
+	newNode->children["ESC"] = newESC;
 
-	childrens[str] = newNode;
+	children[str] = newNode;
 }
 
-// Need to be explained! :p
 void Node::updateChildren(std::string str, std::string ctx, int k)
 {
 	if (k > 0)
 	{
 		std::string new_ctx = ctx.substr(0,1);
-		Node *cnode = childrens[new_ctx];
+		Node *cnode = children[new_ctx];
 		cnode->updateChildren(str, ctx.substr(1, ctx.size() - 1 ), k-1);
 	}
 
-	else 
+	else
 	{
-		if (childrens.count(str) == 0)
+		if (children.count(str) == 0)
 		{
 			insertChild(str);
 		}
 
 		else 
 		{
-			childrens[str]->updateFrequency();
+			children[str]->updateFrequency();
 			childTotalFreq += 1;
 		}
 	}

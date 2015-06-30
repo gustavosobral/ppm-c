@@ -47,14 +47,14 @@ public:
 
 	void CheckTree(Node * cnode)
 	{
-		if ((*cnode->getChildrens()).empty()) return;
+		if ((*cnode->getChildren()).empty()) return;
 
-		std::map<std::string, Node*>::iterator it = cnode->getChildrens()->begin();
-		while(it != cnode->getChildrens()->end())
+		std::map<std::string, Node*>::iterator it = cnode->getChildren()->begin();
+		while(it != cnode->getChildren()->end())
 		{
 			//std::clog << cnode->getName() << " - " << it->second->getName() << ":" << it->first << std::endl;
 			if (it->first != "ESC") EXPECT_EQ(it->second->getName(), cnode->getName() + it->first );
-			CheckTree((*cnode->getChildrens())[it->first]);
+			CheckTree((*cnode->getChildren())[it->first]);
 			it++;
 		}
 	} 
@@ -65,7 +65,7 @@ TEST_F(PPMTest, insertChild)
 {
 	std::string str = "abc";
 	test_node->insertChild(str);		
-	EXPECT_EQ("abc", ((*test_node->getChildrens())[str])->getName());
+	EXPECT_EQ("abc", ((*test_node->getChildren())[str])->getName());
 }
 
 TEST_F(PPMTest, updateChildren)
