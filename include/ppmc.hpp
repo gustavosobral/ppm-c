@@ -6,6 +6,8 @@
 #include <map>			// std::map
 #include <string>		// std::string
 #include <cmath>		// std::string
+#include <vector>		// std::vector
+#include <algorithm>	// std::sort()
 
 class PPMC {
 private:
@@ -23,6 +25,7 @@ public:
 
 	void updateTree(Node * cnode, std::string str, std::string ctx);
 	double getProb(Node * cnode, std::string str, std::string ctx, int level, int k);
+	void encode(Node * cnode, std::string str);
 };
 
 #endif
