@@ -87,6 +87,8 @@ void File::encode(void)
 	std::string str, ctx;
 	std::string word = getEntireFile();
 	int size_word;
+	std::vector<double> *prob = new std::vector<double>;
+	std::vector<std::string> *del_symb = new std::vector<std::string>;
 	
 	Tree = new PPMC(&ac);
 	Tree->setAlphabet_size(getAlphabetSize());
@@ -94,7 +96,6 @@ void File::encode(void)
 	
 	for (int i = 0; i < size_word; i++)
 	{
-		std::vector<double> *prob = new std::vector<double>;
 		str = word.substr(i, 1);
 
 		switch (i) 
@@ -114,8 +115,10 @@ void File::encode(void)
 						k = 2;
 		}
 
-		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob);
-		Tree->PPMC::updateTree(str, ctx);		 
+		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob, del_symb);
+		Tree->PPMC::updateTree(str, ctx);	
+		prob->clear();
+		del_symb->clear();	 
 	}
 }
 

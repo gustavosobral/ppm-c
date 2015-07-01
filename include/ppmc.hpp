@@ -27,9 +27,9 @@ public:
 	void setAlphabet_size(int);
 
 	void updateTree(std::string str, std::string ctx);
-	void getProb(Node * cnode, std::string str, std::string ctx, int level, int k, std::vector<double> * prob);
+	void getProb(Node * cnode, std::string str, std::string ctx, int level, int k, std::vector<double> * prob, std::vector<std::string> * del_symb);
 	void encode(std::string str, std::vector<double> * prob);
-	void encode(Node * cnode, std::string str, std::vector<double> * prob);
+	void encode(Node * cnode, std::string str, std::vector<double> * prob, std::vector<std::string> * del_symb);
 	void removeESC(void);
 };
 

@@ -93,7 +93,9 @@ TEST_F(PPMTest, getProb)
 	//std::vector<double> expected[5] = {(double)1/2, 1, (double)1/4, (double)1/2, (double)1/2};
 	std::string str, ctx;
 	std::vector<double> expected[11];
-
+	std::vector<double> *prob = new std::vector<double>;
+	std::vector<std::string> *del_symb = new std::vector<std::string>;
+	
 	expected[0].push_back((double)1/5);
 
 	expected[1].push_back((double)1/2);
@@ -105,13 +107,13 @@ TEST_F(PPMTest, getProb)
 	expected[3].push_back((double)1/6);
 
 	expected[4].push_back((double)1/2);
-	expected[4].push_back((double)3/7);
+	expected[4].push_back((double)3/6);
 	expected[4].push_back((double)1/2);
 
 	expected[5].push_back((double)2/9);
 
 	expected[6].push_back((double)2/4);
-	expected[6].push_back((double)4/10);
+	expected[6].push_back((double)4/8);
 	expected[6].push_back((double)1);
 
 	expected[7].push_back((double)3/7);
@@ -124,9 +126,6 @@ TEST_F(PPMTest, getProb)
 
 	for (i = 0; i < size_word; i++)
 	{
-
-		std::vector<double> *prob = new std::vector<double>;
-
 		str = word.substr(i,1);
 		switch (i) 
 		{
@@ -143,9 +142,11 @@ TEST_F(PPMTest, getProb)
 		}
 
 		std::clog << "(" << str << "," << ctx << "," << k << ")" << std::endl;
-		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob);
+		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob, del_symb);
 		EXPECT_EQ(expected[i], *prob);
-		Tree->PPMC::updateTree(str, ctx);		 
+		Tree->PPMC::updateTree(str, ctx);	
+		prob->clear();
+		del_symb->clear();	 
 
 	}
 
