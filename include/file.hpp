@@ -14,8 +14,8 @@
 class File {
 private:
 	ArithmeticCoderC ac;
-	std::fstream *mSource;
-	std::fstream *mTarget;
+	std::fstream mSource;
+	std::fstream mTarget;
 
 	void encode(void);
 	void decode(void);

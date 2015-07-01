@@ -2,6 +2,7 @@
 #define __PPMC_H
 
 #include "node.hpp"
+#include "arithmeticcoderc.hpp"
 
 #include <map>			// std::map
 #include <string>		// std::string
@@ -14,10 +15,12 @@ private:
 	Node * root;
 	int alphabet_size;
 	std::map<char,bool> char_map;
+	ArithmeticCoderC * mAc;
 
 public:
 	PPMC(void);
 	PPMC(int);
+	PPMC(ArithmeticCoderC * ac);
 	~PPMC(void);
 	Node * getRoot(void);
 	int getAlphabet_size(void);
