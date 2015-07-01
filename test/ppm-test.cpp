@@ -81,17 +81,52 @@ TEST_F(PPMTest, updateChildren)
 
 TEST_F(PPMTest, getProb)
 {
-	std::string word = "ARARA";
-	Tree->setAlphabet_size(2);
+	//std::string word = "ARARA";
+	
+	std::string word = "ABRACADABRA";
+	Tree->setAlphabet_size(5);
 
 	int i;
 	int k;
 	int size_word = word.size();
-	double expected[5] = {(double)1/2, 1, (double)1/4, (double)1/2, (double)1/2};
+
+	//std::vector<double> expected[5] = {(double)1/2, 1, (double)1/4, (double)1/2, (double)1/2};
 	std::string str, ctx;
+	std::vector<double> expected[11];
+
+	expected[0].push_back((double)1/5);
+
+	expected[1].push_back((double)1/2);
+	expected[1].push_back((double)1/4);
+
+	expected[2].push_back((double)1/2);
+	expected[2].push_back((double)1/3);
+
+	expected[3].push_back((double)1/6);
+
+	expected[4].push_back((double)1/2);
+	expected[4].push_back((double)3/7);
+	expected[4].push_back((double)1/2);
+
+	expected[5].push_back((double)2/9);
+
+	expected[6].push_back((double)2/4);
+	expected[6].push_back((double)4/10);
+	expected[6].push_back((double)1);
+
+	expected[7].push_back((double)3/7);
+
+	expected[8].push_back((double)1/6);
+
+	expected[9].push_back((double)1/2);
+
+	expected[10].push_back((double)1/2);
 
 	for (i = 0; i < size_word; i++)
 	{
+
+		std::vector<double> *prob = new std::vector<double>;
+
 		str = word.substr(i,1);
 		switch (i) 
 		{
@@ -107,8 +142,10 @@ TEST_F(PPMTest, getProb)
 						k = 2;
 		}
 
-		EXPECT_EQ(expected[i], Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k));
-		Tree->PPMC::updateTree(Tree->getRoot(), str, ctx);		 
+		std::clog << "(" << str << "," << ctx << "," << k << ")" << std::endl;
+		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob);
+		EXPECT_EQ(expected[i], *prob);
+		Tree->PPMC::updateTree(str, ctx);		 
 
 	}
 
