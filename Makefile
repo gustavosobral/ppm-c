@@ -31,5 +31,4 @@ $(myapp): $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -rf ~* ppm doc/ 
-	
+	rm -rf ~* ppm doc/

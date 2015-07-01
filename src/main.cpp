@@ -5,7 +5,7 @@
 #include <iostream>		//	std::clog
 #include <exception>	//	std::exception
 
-const char * __progname = "ppmc";
+const char * __progname = "ppm";
 const char * __version = "0.1";
 const char * __authors = "Gustavo Sobral and Francielly Cardoso";
 

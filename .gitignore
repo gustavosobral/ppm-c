@@ -4,3 +4,4 @@ ppm-test
 arith
 
 doc/
+*.ppmc
