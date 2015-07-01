@@ -4,6 +4,7 @@
 #include "ppmc.hpp"
 #include "arithmeticcoderc.hpp"
 
+#include <map>					// 	std::map
 #include <iostream>			//	std::clog
 #include <fstream>			//	std::fstream
 #include <string.h>			//	strcmp()
@@ -17,12 +18,19 @@ private:
 	std::fstream mSource;
 	std::fstream mTarget;
 
+	int alphabetSize;
+	std::string * entireFile;
+
 	void encode(void);
 	void decode(void);
 
+	void loadFile(void);
 public:
 	File(const char * filePath, const char * option);
 	~File(void);
+
+	int getAlphabetSize(void);
+	std::string getEntireFile(void);
 
 	void compress();
 	void extract();

@@ -2,9 +2,6 @@
 
 File::File(const char * filePath, const char * option)
 {
-	// mSource = new fstream();
-	// mTarget = new fstream();
-
 	struct stat sb;
 	stat(filePath, &sb);
 
@@ -49,18 +46,50 @@ File::File(const char * filePath, const char * option)
 
 File::~File(void){}
 
+void File::loadFile(void)
+{
+	// Gets the file size
+	mSource.seekg(0, std::ios::end);
+	std::size_t size = mSource.tellg();
+	mSource.seekg(0, std::ios::beg);
+
+	// Reads all file
+	std::vector<char> v (size/sizeof(char));
+	mSource.read((char *) &v[0], size);
+
+	// Count the alphabetSize
+	std::map<char, int> frequencies;
+
+	for(unsigned int i = 0 ; i < size; i++)
+	{
+		frequencies[v[i]] = 1;
+	}
+	alphabetSize = frequencies.size();
+
+	// Converts std::vector<char> to std::string
+	entireFile = new std::string(v.begin(), v.end());
+}
+
+int File::getAlphabetSize(void)
+{
+	return alphabetSize;
+}
+
+std::string File::getEntireFile(void)
+{
+	return * entireFile;
+}
+
 void File::encode(void)
 {
 	int k;
 	PPMC *Tree;
 	std::string str, ctx;
-	// [ToDo] Getting file
-	std::string word = "ABRACADABRA";
+	std::string word = getEntireFile();
 	int size_word;
 	
 	Tree = new PPMC(&ac);
-	// [ToDo] Getting size from file
-	Tree->setAlphabet_size(5);
+	Tree->setAlphabet_size(getAlphabetSize());
 	size_word = word.size();
 	
 	for (int i = 0; i < size_word; i++)
@@ -99,6 +128,7 @@ void File::compress(void)
 {
 	std::clog << "# Compressing..." << std::endl;
 	
+	loadFile();
 	ac.SetFile(&mTarget);	
 	encode();
 	ac.EncodeFinish();
@@ -111,9 +141,9 @@ void File::extract(void)
 {
 	std::clog << "# Extracting..." << std::endl;
 
-	// ac.SetFile(mSource);
-	// ac.DecodeStart();
-	// See the Decode() method on ModelOrder0C.cc file 
+	loadFile();
+	ac.SetFile(&mSource);
+	ac.DecodeStart();
 	decode();
 
 	mSource.close();
