@@ -22,6 +22,15 @@ PPMC::PPMC(int n)
 	root->setChildren("ESC", newESC); 
 }
 
+PPMC::PPMC(ArithmeticCoderC * ac)
+{
+	root = new Node("");
+	Node *newESC = new Node("ESC");
+	root->setK(0);
+	mAc = ac;
+
+	root->setChildren("ESC", newESC); 
+}
 
 Node * PPMC::getRoot(void)
 {
@@ -140,13 +149,12 @@ void PPMC::encode(Node * cnode, std::string str, std::vector<double> * prob)
 		}
 	}
 
-	//std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
+	// std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
 
 	cprob = (double) (high - low) / total;
 	prob->push_back(cprob);
 
-	// aritmetic(low, high, total);
-
+	mAc->Encode(low, high, total);
 }
 
 void PPMC::encode(std::string str, std::vector<double> * prob){
@@ -158,8 +166,7 @@ void PPMC::encode(std::string str, std::vector<double> * prob){
 	double cprob = (double) (high - low) / total;
 	prob->push_back(cprob);
 
-	//std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
+	// std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
 
 	--alphabet_size;
-
 }
