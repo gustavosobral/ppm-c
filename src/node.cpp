@@ -55,6 +55,10 @@ int Node::getChildTotalFreq()
 	return childTotalFreq;
 }
 
+void Node::setChildTotalFreq(int n)
+{
+	childTotalFreq = n;
+}
 
 void Node::insertChild(std::string str)
 {
@@ -63,14 +67,21 @@ void Node::insertChild(std::string str)
 	Node *newNode = new Node(new_name);
 
 	newNode->frequency += 1;
-	childTotalFreq += 2;
-	children["ESC"]->frequency += 1;
+	childTotalFreq += 1;
+	
+	if (children.count("ESC"))
+	{
+		children["ESC"]->frequency += 1;
+		childTotalFreq += 1;
+	}
+
 	newNode->K = new_name.size();
 
 	Node *newESC = new Node("ESC");
 	newNode->children["ESC"] = newESC;
 
 	children[str] = newNode;
+
 }
 
 void Node::updateChildren(std::string str, std::string ctx, int k)

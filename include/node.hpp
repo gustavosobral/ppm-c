@@ -29,6 +29,7 @@ public:
 
 	int getFrequency(void);
 	int getChildTotalFreq(void);
+	void setChildTotalFreq(int);
 
 	std::string updateContext(std::string ctx);
 	void insertChild(std::string str);

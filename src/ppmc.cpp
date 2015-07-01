@@ -40,22 +40,33 @@ void PPMC::setAlphabet_size(int n)
 
 bool compareNodes(Node* i, Node* j)
 {
-  return (i->getFrequency() < j->getFrequency());
+  return (i->getFrequency() > j->getFrequency());
 }
 
-void PPMC::updateTree(Node * cnode, std::string str, std::string ctx)
+void PPMC::removeESC(){
+
+	int freq = (*root->getChildren())["ESC"]->getFrequency();
+
+	root->setChildTotalFreq(root->getChildTotalFreq() - freq);
+	delete (*root->getChildren())["ESC"];
+	(*root->getChildren()).erase("ESC");
+}
+
+void PPMC::updateTree(std::string str, std::string ctx)
 {
 	int i;
 	
 	for (i = ctx.size(); i > 0; i--)
 	{
-		cnode->updateChildren(str, ctx, i);
+		root->updateChildren(str, ctx, i);
 		ctx = ctx.substr(1,i-1);
 	}
-	cnode->updateChildren(str, "", i);
+	root->updateChildren(str, "", i);
+
+	if ((*root->getChildren()).count("ESC") && alphabet_size == 0) removeESC();
 }
 
-double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, int k)
+void PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, int k, std::vector<double> * prob)
 {
 	/* checks if the context of current node is equal to the context wanted */
 	if (cnode->getName() == ctx)
@@ -63,48 +74,51 @@ double PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, 
 		/* checks if the symbol (str) is a child of current node */
 		if (!(*cnode->getChildren()).count(str))
 		{
-			//codificar escape
+			encode(cnode, "ESC", prob);
 
 			/* if the context is "" (empty), then the symbol is only found in k = -1 */
 			if (ctx == "")
 			{
-				return (double)1/alphabet_size--;
+				//qual intervalo em k = -1? a prob calculada sempre sera a menor e portanto o ultimo intervalo?
+				encode(str, prob);
+				return;
 			}
 			/* else the search restart in k = k - 1 */
 			else
 			{
 				std::string new_ctx = ctx.substr(1, --k);
-				return getProb(root, str, new_ctx, 0, k);
+				return getProb(root, str, new_ctx, 0, k, prob);
 			}
 		}
 		/* if the symbol is a child of cnode, then its propability is returned */
 		else
 		{
-			int freq = (*cnode->getChildren())[str]->getFrequency();
-			int total = cnode->getChildTotalFreq();
-			// codificar simbolo 
-			return (double)freq/total;
+			encode(cnode, str, prob);
+			return;
 		}
 	}
 	/* if the context is not the wanted one, then the node is updated */ 
 	else
 	{	
 		std::string child = ctx.substr(level,1);
-		if (!(*cnode->getChildren()).count(child)) return 0;
+		if (!(*cnode->getChildren()).count(child)) return;
 		else
 		{
 			Node *new_node = (*cnode->getChildren())[child];
-			return getProb(new_node, str, ctx, ++level, k);
+			return getProb(new_node, str, ctx, ++level, k, prob);
 		}
 	}
 }
 
-void PPMC::encode(Node * cnode, std::string str)
+void PPMC::encode(Node * cnode, std::string str, std::vector<double> * prob)
 {
 	int low = 0;
-	int high;
+	int high = 0;
 	int total = cnode->getChildTotalFreq();
+	double cprob;
 	std::vector<Node*> copy_nodes;
+
+	if (total == 0) return; /* node was created but not initialized */
 
 	for(std::map<std::string, Node*>::iterator it = cnode->getChildren()->begin(); it != cnode->getChildren()->end(); it++)
 	{
@@ -115,7 +129,7 @@ void PPMC::encode(Node * cnode, std::string str)
 
 	for(std::vector<Node*>::iterator it = copy_nodes.begin(); it != copy_nodes.end(); it++)
 	{
-		if (*it == cnode) 
+		if (*it == (*cnode->getChildren())[str]) 
 		{
 			high = low + (*it)->getFrequency();
 			break;
@@ -126,6 +140,26 @@ void PPMC::encode(Node * cnode, std::string str)
 		}
 	}
 
+	//std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
+
+	cprob = (double) (high - low) / total;
+	prob->push_back(cprob);
+
 	// aritmetic(low, high, total);
+
+}
+
+void PPMC::encode(std::string str, std::vector<double> * prob){
+
+	int total = alphabet_size;
+	int high = alphabet_size; 
+	int low = alphabet_size - 1;
+
+	double cprob = (double) (high - low) / total;
+	prob->push_back(cprob);
+
+	//std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
+
+	--alphabet_size;
 
 }
