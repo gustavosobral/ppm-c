@@ -1,5 +1,4 @@
 #include "entry.hpp"
-#define ESC "ESC"
 
 Entry::Entry(void){}
 
@@ -80,30 +79,46 @@ std::string Entry::NextChild(void)
 	return context.substr(level++,1);
 }
 
-bool compareNodes(Node* i, Node* j)
+std::string Entry::ReturnSymbolOrESC()
 {
-	/* sort by frequency, but if tre frequencies are equal then it is sorted by alphabetical order */
-	if (i->getFrequency() == j->getFrequency()) 
+	if (code_ESC) 
 	{
-		std::string last_char_i = i->getName();
-		std::string last_char_j = j->getName();
-		last_char_i = last_char_i.substr(last_char_i.size() - 1);
-		last_char_j = last_char_j.substr(last_char_j.size() - 1);
+		code_ESC = false;
+		return ESC;
+	} 
+	else return symbol;
+}
 
-		return (last_char_i < last_char_j);
-	}
-	else return (i->getFrequency() > j->getFrequency());
+void Entry::UpdateProb(Interval interval)
+{
+	prob->push_back((double) (interval.getHigh() - interval.getLow()) / interval.getTotal());
+}
+	
+void Entry::UpdateContext(void)
+{
+	std::string new_ctx = context.substr(1, context.size()-1 );
+	context = new_ctx;
+	level = 0;	
+}
+
+void Entry::EncodeESC(Node * cnode, ArithmeticCoderC * mAc)
+{
+	if (cnode->getChildrenFreq() != 0)
+	{
+		code_ESC = true;
+		Encode(cnode, mAc); 
+	}				
 }
 
 int Entry::Encode(int alphabet_size, ArithmeticCoderC * mAc)
 {
 	int high = alphabet_size;
 	int low = --alphabet_size;
+	Interval * interval = new Interval(low, high, high);
 
-	prob->push_back((double) (high - low) / high);
+	UpdateProb(*interval);
 
-	mAc->Encode(low, high, high);
-
+	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
 	std::clog << "symbol: " << symbol << " - low = " << low << ", high = " << high << ", total = " << high << std::endl;
 
 	return alphabet_size;
@@ -113,42 +128,21 @@ int Entry::Encode(int alphabet_size, ArithmeticCoderC * mAc)
 void Entry::Encode(Node * cnode, ArithmeticCoderC * mAc)
 {
 	std::string str;
-	int high, low = 0;
-	int total = cnode->getChildTotalFreq();
+	Interval *interval = new Interval();
 	std::vector<Node*> *children;
-	std::vector<std::string> del_symb_copy = *del_symb;
 
-	if (code_ESC) str = ESC; 
-	else str = symbol;
+	str = ReturnSymbolOrESC();	// Returns which string will be encoded: an escape or a symbol
+
+	interval->FindTotal(*del_symb, cnode);
 	
 	del_symb->clear();
 
-	children = cnode->Node::CopyChildren(del_symb);
+	children = cnode->Node::GetSortedChildren(del_symb);
 
-	std::stable_sort(children->begin(), children->end(), compareNodes);
+	interval->FindLowHigh(str, children, cnode);	
 
-	for(std::vector<Node*>::iterator it = children->begin(); it != children->end(); it++)
-	{
-		if (*it == (*cnode->getChildren())[str]) 
-		{
-			high = low + (*it)->getFrequency();
-			break;
-		}
-		else
-		{
-			low += (*it)->getFrequency();
-		}
-	}
+	UpdateProb(*interval);
 
-	std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
-
-	for(std::vector<std::string>::iterator it = del_symb_copy.begin(); it != del_symb_copy.end(); it++)
-	{
-		std::clog << "deleted: " << *it << std::endl;
-		total -= (*cnode->getChildren())[*it]->getFrequency(); 
-	}
-
-	prob->push_back((double) (high - low) / total);
-
-	mAc->Encode(low, high, total);
+	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
+	std::clog << "symbol: " << str << " - low = " << interval->getLow() << ", high = " << interval->getHigh() << ", total = " << interval->getTotal() << std::endl;
 }

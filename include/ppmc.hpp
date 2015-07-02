@@ -25,6 +25,7 @@ public:
 	int getAlphabetSize(void);
 	void setAlphabetSize(int);
 
+	void SymbolIsNotChild(Node * cnode, Entry * entry);
 	void Update(Entry entry);
 	void getProb(Node * cnode, Entry * entry);
 	void RemoveESC(void);

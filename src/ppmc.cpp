@@ -1,5 +1,4 @@
 #include "ppmc.hpp"
-#define ESC "ESC"
 
 PPMC::~PPMC(void){}
 
@@ -39,7 +38,7 @@ void PPMC::RemoveESC(){
 
 	std::map<std::string,Node*> *root_children = root->getChildren();
 
-	root->setChildTotalFreq(root->getChildTotalFreq() - (*root_children)[ESC]->getFrequency());
+	root->setChildrenFreq(root->getChildrenFreq() - (*root_children)[ESC]->getFrequency());
 	
 	delete (*root_children)[ESC];
 	root_children->erase(ESC);
@@ -60,6 +59,25 @@ void PPMC::Update(Entry entry)
 	if ((*root->getChildren()).count(ESC) && alphabet_size == 0) RemoveESC();
 }
 
+
+void PPMC::SymbolIsNotChild(Node * cnode, Entry * entry)
+{
+	entry->EncodeESC(cnode, mAc);
+	
+	/* if the context is "" (empty), then the symbol is only found in k = -1 */
+	if (entry->getContext() == "")
+	{
+		alphabet_size = entry->Encode(alphabet_size, mAc);
+		return;
+	}
+	/* else the search restart in k = k - 1 */
+	else
+	{
+		entry->UpdateContext();
+		return getProb(root, entry);
+	}
+}
+
 void PPMC::getProb(Node * cnode, Entry * entry)
 {
 	/* checks if the context of current node is equal to the context wanted */
@@ -67,29 +85,8 @@ void PPMC::getProb(Node * cnode, Entry * entry)
 	{
 		/* checks if the symbol (str) is a child of current node */
 		if (!(*cnode->getChildren()).count(entry->getSymbol()))
-		{
-			/* encode if node was created and initialized */
-			if (cnode->getChildTotalFreq() != 0) 
-				{
-					entry->setCodeESC(true);
-					entry->Encode(cnode, mAc); 
-				}
-					
-			/* if the context is "" (empty), then the symbol is only found in k = -1 */
-			if (entry->getContext() == "")
-			{
-				alphabet_size = entry->Encode(alphabet_size, mAc);
-				return;
-			}
-			/* else the search restart in k = k - 1 */
-			else
-			{
-				std::string new_ctx = entry->getContext().substr(1);
-				entry->setContext(new_ctx);
-				entry->ResetLevel();
-
-				return getProb(root, entry);
-			}
+		{			
+			SymbolIsNotChild(cnode, entry);
 		}
 		/* if the symbol is a child of cnode, then its propability is returned */
 		else
@@ -102,12 +99,8 @@ void PPMC::getProb(Node * cnode, Entry * entry)
 	else
 	{	
 		std::string child = entry->NextChild();
-		if (!(*cnode->getChildren()).count(child)) return;
-		else
-		{
-			Node *new_node = (*cnode->getChildren())[child];
-			return getProb(new_node, entry);
-		}
+		Node *new_node = (*cnode->getChildren())[child];
+		return getProb(new_node, entry);
 	}
 }
 
