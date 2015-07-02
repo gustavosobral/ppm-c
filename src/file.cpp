@@ -46,7 +46,7 @@ File::File(const char * filePath, const char * option)
 
 File::~File(void){}
 
-void File::loadFile(void)
+void File::LoadFile(void)
 {
 	// Gets the file size
 	mSource.seekg(0, std::ios::end);
@@ -70,29 +70,22 @@ void File::loadFile(void)
 	entireFile = new std::string(v.begin(), v.end());
 }
 
-int File::getAlphabetSize(void)
-{
-	return alphabetSize;
-}
-
 std::string File::getEntireFile(void)
 {
 	return * entireFile;
 }
 
-void File::encode(void)
+void File::Encode(void)
 {
-	int k;
 	PPMC *Tree;
 	std::string str, ctx;
 	std::string word = getEntireFile();
 	int size_word;
-	std::vector<double> *prob = new std::vector<double>;
-	std::vector<std::string> *del_symb = new std::vector<std::string>;
 	
 	Tree = new PPMC(&ac);
-	Tree->setAlphabet_size(getAlphabetSize());
+	Tree->setAlphabetSize(alphabetSize);
 	size_word = word.size();
+	Entry *entry, original_entry;
 	
 	for (int i = 0; i < size_word; i++)
 	{
@@ -100,54 +93,48 @@ void File::encode(void)
 
 		switch (i) 
 		{
-			case 0:
-						ctx = "";
-						k = 0;
-			   		break;
+			case 0:		entry = new Entry(str, "");
+			   			break;
 			
-			case 1:
-						ctx = word.substr(0,1);
-						k = 1;
+			case 1:		entry = new Entry(str, word.substr(0,1));
 						break;  
 			
-			default:
-						ctx = word.substr(i-2,2);	 
-						k = 2;
+			default:	entry = new Entry(str, word.substr(i-2,2));	 
+
 		}
 
-		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob, del_symb);
-		Tree->PPMC::updateTree(str, ctx);	
-		prob->clear();
-		del_symb->clear();	 
+		original_entry = *entry;
+		Tree->PPMC::getProb(Tree->getRoot(), entry);
+		Tree->PPMC::Update(original_entry);	 
 	}
 }
 
-void File::decode(void)
+void File::Decode(void)
 {
 	// [ToDo]
 }
 
-void File::compress(void)
+void File::Compress(void)
 {
 	std::clog << "# Compressing..." << std::endl;
 	
-	loadFile();
+	LoadFile();
 	ac.SetFile(&mTarget);	
-	encode();
+	Encode();
 	ac.EncodeFinish();
 
 	mSource.close();
 	mTarget.close();
 }
 
-void File::extract(void)
+void File::Extract(void)
 {
 	std::clog << "# Extracting..." << std::endl;
 
-	loadFile();
+	LoadFile();
 	ac.SetFile(&mSource);
 	ac.DecodeStart();
-	decode();
+	Decode();
 
 	mSource.close();
 	mTarget.close();

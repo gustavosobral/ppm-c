@@ -1,5 +1,6 @@
 #include "node.hpp"
 #include "ppmc.hpp"
+#include "file.hpp"
 
 #include <iostream>
 #include <gtest/gtest.h>
@@ -14,7 +15,6 @@ public:
   	{
   		test_node = new Node("");
 		Node *newESC = new Node("ESC");
-		test_node->setK(0);
 
 		test_node->setChildren("ESC", newESC); 
 
@@ -84,17 +84,14 @@ TEST_F(PPMTest, getProb)
 	//std::string word = "ARARA";
 	
 	std::string word = "ABRACADABRA";
-	Tree->setAlphabet_size(5);
+	Tree->setAlphabetSize(5);
 
-	int i;
-	int k;
 	int size_word = word.size();
 
 	//std::vector<double> expected[5] = {(double)1/2, 1, (double)1/4, (double)1/2, (double)1/2};
 	std::string str, ctx;
 	std::vector<double> expected[11];
-	std::vector<double> *prob = new std::vector<double>;
-	std::vector<std::string> *del_symb = new std::vector<std::string>;
+	Entry *entry, original_entry;
 	
 	expected[0].push_back((double)1/5);
 
@@ -124,47 +121,26 @@ TEST_F(PPMTest, getProb)
 
 	expected[10].push_back((double)1/2);
 
-	for (i = 0; i < size_word; i++)
+	for (int i = 0; i < size_word; i++)
 	{
-		str = word.substr(i,1);
+		str = word.substr(i, 1);
+
 		switch (i) 
 		{
-			case 0: 	ctx = "";
-						k = 0;
+			case 0:		entry = new Entry(str, "");
 			   			break;
 			
-			case 1: 	ctx = word.substr(0,1);
-						k = 1;
+			case 1:		entry = new Entry(str, word.substr(0,1));
 						break;  
 			
-			default: 	ctx = word.substr(i-2,2);	 
-						k = 2;
+			default:	entry = new Entry(str, word.substr(i-2,2));	 
+
 		}
 
-		std::clog << "(" << str << "," << ctx << "," << k << ")" << std::endl;
-		Tree->PPMC::getProb(Tree->getRoot(), str, ctx, 0, k, prob, del_symb);
-		EXPECT_EQ(expected[i], *prob);
-		Tree->PPMC::updateTree(str, ctx);	
-		prob->clear();
-		del_symb->clear();	 
-
+		std::clog << "(" << str << "," << entry->getContext() << ")" << std::endl;
+		original_entry = *entry;
+		Tree->PPMC::getProb(Tree->getRoot(), entry);
+		EXPECT_EQ(expected[i], *entry->getProb());
+		Tree->PPMC::Update(original_entry);	 
 	}
-
-	/*
-	EXPECT_EQ((double) 1/2, Tree->PPMC::getProb(Tree->getRoot(), "A", "", 0, 0));
-	updateTree(Tree->getRoot(), "A", "");
-	
-	EXPECT_EQ((double) 1, Tree->PPMC::getProb(Tree->getRoot(), "B", "A", 0, 1));
-	updateTree(Tree->getRoot(), "B", "A");
-
-	EXPECT_EQ((double) 1/4, Tree->PPMC::getProb(Tree->getRoot(), "a", "ar", 0, 2));
-	updateTree(Tree->getRoot(), "", "ar");
-
-	EXPECT_EQ((double) 1/2, Tree->PPMC::getProb(Tree->getRoot(), "r", "ra", 0, 2));
-	updateTree(Tree->getRoot(), "r", "ra");
-
-	EXPECT_EQ((double) 1/2, Tree->PPMC::getProb(Tree->getRoot(), "a", "ar", 0, 2));
-	updateTree(Tree->getRoot(), "a", "ar");*/
-
-
 }

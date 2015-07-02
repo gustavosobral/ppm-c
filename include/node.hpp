@@ -3,7 +3,7 @@
 
 #include <map>			// std::map
 #include <string>		// std::string
-
+#include <vector>		// std::vector
 #include <iostream>
 
 class Node {
@@ -12,8 +12,7 @@ private:
 	int frequency;
 	int childTotalFreq;
 	std::map <std::string, Node*> children;
-	int K;
-
+	
 public:
 	Node(void);
 	~Node(void);
@@ -22,19 +21,18 @@ public:
 	std::map<std::string, Node*> * getChildren(void);
 	void setChildren(std::string s, Node * newNode);
 
-	int getK(void);
-	void setK(int k);
-
 	std::string getName(void);
 
 	int getFrequency(void);
 	int getChildTotalFreq(void);
 	void setChildTotalFreq(int);
 
+	std::vector<Node*> * CopyChildren(std::vector<std::string> * del_symb);
 	std::string updateContext(std::string ctx);
 	void insertChild(std::string str);
 	void updateChildren(std::string str, std::string ctx, int k);
 	void updateFrequency(void);
+
 };
 
 #endif

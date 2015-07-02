@@ -54,11 +54,11 @@ int main(int argc, char * argv[], char * envp[])
 			{
 				// Do compression
 				File * f = new File(argv[2], "C");
-				f->compress();
+				f->Compress();
 			} else {
 				// Do extraction
 				File * f = new File(argv[2], "E");
-				f->extract();
+				f->Extract();
 			}
 		} catch(std::exception &e)
 		{

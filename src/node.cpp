@@ -1,4 +1,5 @@
 #include "node.hpp"
+#define ESC "ESC"
 
 Node::Node(void)
 {
@@ -40,16 +41,6 @@ void Node::updateFrequency(void)
 	frequency = frequency + 1;
 }
 
-int Node::getK(void)
-{
-	return K;
-}
-
-void Node::setK(int k)
-{
-	K = k;
-}
-
 int Node::getChildTotalFreq()
 {
 	return childTotalFreq;
@@ -58,6 +49,21 @@ int Node::getChildTotalFreq()
 void Node::setChildTotalFreq(int n)
 {
 	childTotalFreq = n;
+}
+
+std::vector<Node*> * Node::CopyChildren(std::vector<std::string> * del_symb)
+{
+	std::vector<Node*> *copy = new std::vector<Node*>;
+
+	for(std::map<std::string, Node*>::iterator it = children.begin(); it != children.end(); it++)
+	{
+		copy->push_back(it->second);
+
+		if (it->first == ESC) continue;
+		else del_symb->push_back(it->first);
+	}
+
+	return copy;
 }
 
 void Node::insertChild(std::string str)
@@ -74,8 +80,6 @@ void Node::insertChild(std::string str)
 		children["ESC"]->frequency += 1;
 		childTotalFreq += 1;
 	}
-
-	newNode->K = new_name.size();
 
 	Node *newESC = new Node("ESC");
 	newNode->children["ESC"] = newESC;
@@ -95,11 +99,7 @@ void Node::updateChildren(std::string str, std::string ctx, int k)
 
 	else
 	{
-		if (children.count(str) == 0)
-		{
-			insertChild(str);
-		}
-
+		if (children.count(str) == 0)	insertChild(str);
 		else 
 		{
 			children[str]->updateFrequency();
