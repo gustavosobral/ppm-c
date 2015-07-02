@@ -103,4 +103,3 @@ void PPMC::getProb(Node * cnode, Entry * entry)
 		return getProb(new_node, entry);
 	}
 }
-
