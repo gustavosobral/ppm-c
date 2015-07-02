@@ -1,35 +1,23 @@
 #include "ppmc.hpp"
+#define ESC "ESC"
 
 PPMC::~PPMC(void){}
 
-/* create Tree */ 
 PPMC::PPMC(void)
 {
 	root = new Node("");
-	Node *newESC = new Node("ESC");
-	root->setK(0);
+	Node *newESC = new Node(ESC);
 
-	root->setChildren("ESC", newESC); 
-}
-
-PPMC::PPMC(int n)
-{
-	root = new Node("");
-	Node *newESC = new Node("ESC");
-	root->setK(0);
-	alphabet_size = n;
-
-	root->setChildren("ESC", newESC); 
+	root->setChildren(ESC, newESC); 
 }
 
 PPMC::PPMC(ArithmeticCoderC * ac)
 {
 	root = new Node("");
-	Node *newESC = new Node("ESC");
-	root->setK(0);
+	Node *newESC = new Node(ESC);
 	mAc = ac;
 
-	root->setChildren("ESC", newESC); 
+	root->setChildren(ESC, newESC); 
 }
 
 Node * PPMC::getRoot(void)
@@ -37,147 +25,89 @@ Node * PPMC::getRoot(void)
 	return root;
 }
 
-int PPMC::getAlphabet_size(void)
+int PPMC::getAlphabetSize(void)
 {
 	return alphabet_size;
 }
 
-void PPMC::setAlphabet_size(int n)
+void PPMC::setAlphabetSize(int n)
 {
 	alphabet_size = n;
 }
 
-bool compareNodes(Node* i, Node* j)
-{
-  return (i->getFrequency() > j->getFrequency());
-}
+void PPMC::RemoveESC(){
 
-void PPMC::removeESC(){
+	std::map<std::string,Node*> *root_children = root->getChildren();
 
-	int freq = (*root->getChildren())["ESC"]->getFrequency();
-
-	root->setChildTotalFreq(root->getChildTotalFreq() - freq);
-	delete (*root->getChildren())["ESC"];
-	(*root->getChildren()).erase("ESC");
-}
-
-void PPMC::updateTree(std::string str, std::string ctx)
-{
-	int i;
+	root->setChildTotalFreq(root->getChildTotalFreq() - (*root_children)[ESC]->getFrequency());
 	
-	for (i = ctx.size(); i > 0; i--)
+	delete (*root_children)[ESC];
+	root_children->erase(ESC);
+}
+
+void PPMC::Update(Entry entry)
+{
+	std::string str = entry.getSymbol();
+	std::string ctx = entry.getContext();
+
+	for (int i = ctx.size(); i > 0; i--)
 	{
 		root->updateChildren(str, ctx, i);
 		ctx = ctx.substr(1,i-1);
 	}
-	root->updateChildren(str, "", i);
+	root->updateChildren(str, "", 0);
 
-	if ((*root->getChildren()).count("ESC") && alphabet_size == 0) removeESC();
+	if ((*root->getChildren()).count(ESC) && alphabet_size == 0) RemoveESC();
 }
 
-void PPMC::getProb(Node * cnode, std::string str, std::string ctx, int level, int k, std::vector<double> * prob, std::vector<std::string> * del_symbols)
+void PPMC::getProb(Node * cnode, Entry * entry)
 {
 	/* checks if the context of current node is equal to the context wanted */
-	if (cnode->getName() == ctx)
+	if (cnode->getName() == entry->getContext())
 	{
 		/* checks if the symbol (str) is a child of current node */
-		if (!(*cnode->getChildren()).count(str))
+		if (!(*cnode->getChildren()).count(entry->getSymbol()))
 		{
-			encode(cnode, "ESC", prob, del_symbols);
-
+			/* encode if node was created and initialized */
+			if (cnode->getChildTotalFreq() != 0) 
+				{
+					entry->setCodeESC(true);
+					entry->Encode(cnode, mAc); 
+				}
+					
 			/* if the context is "" (empty), then the symbol is only found in k = -1 */
-			if (ctx == "")
+			if (entry->getContext() == "")
 			{
-				//qual intervalo em k = -1? a prob calculada sempre sera a menor e portanto o ultimo intervalo?
-				encode(str, prob);
+				alphabet_size = entry->Encode(alphabet_size, mAc);
 				return;
 			}
 			/* else the search restart in k = k - 1 */
 			else
 			{
-				std::string new_ctx = ctx.substr(1, --k);
-				return getProb(root, str, new_ctx, 0, k, prob, del_symbols);
+				std::string new_ctx = entry->getContext().substr(1);
+				entry->setContext(new_ctx);
+				entry->ResetLevel();
+
+				return getProb(root, entry);
 			}
 		}
 		/* if the symbol is a child of cnode, then its propability is returned */
 		else
 		{
-			encode(cnode, str, prob, del_symbols);
+			entry->Encode(cnode, mAc);
 			return;
 		}
 	}
 	/* if the context is not the wanted one, then the node is updated */ 
 	else
 	{	
-		std::string child = ctx.substr(level,1);
+		std::string child = entry->NextChild();
 		if (!(*cnode->getChildren()).count(child)) return;
 		else
 		{
 			Node *new_node = (*cnode->getChildren())[child];
-			return getProb(new_node, str, ctx, ++level, k, prob, del_symbols);
+			return getProb(new_node, entry);
 		}
 	}
 }
 
-void PPMC::encode(Node * cnode, std::string str, std::vector<double> * prob, std::vector<std::string> * del_symbols)
-{
-	int low = 0;
-	int high = 0;
-	int total = cnode->getChildTotalFreq();
-	double cprob;
-	std::vector<Node*> copy_nodes;
-	std::vector<std::string> copy_del_symbols = *del_symbols;
-	del_symbols->clear();
-
-	if (total == 0) return; /* node was created but not initialized */
-
-	for(std::map<std::string, Node*>::iterator it = cnode->getChildren()->begin(); it != cnode->getChildren()->end(); it++)
-	{
-		copy_nodes.push_back(it->second);
-		if (it->first == "ESC") continue;
-		else del_symbols->push_back(it->first);
-	}
-
-	std::stable_sort(copy_nodes.begin(), copy_nodes.end(), compareNodes);
-
-	for(std::vector<Node*>::iterator it = copy_nodes.begin(); it != copy_nodes.end(); it++)
-	{
-		if (*it == (*cnode->getChildren())[str]) 
-		{
-			high = low + (*it)->getFrequency();
-			break;
-		}
-		else
-		{
-			low += (*it)->getFrequency();
-		}
-	}
-
-	// std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
-
-	for(std::vector<std::string>::iterator it = copy_del_symbols.begin(); it != copy_del_symbols.end(); it++)
-	{
-		std::clog << "deleted: " << *it << std::endl;
-		total -= (*cnode->getChildren())[*it]->getFrequency(); 
-	}
-
-
-	cprob = (double) (high - low) / total;
-	prob->push_back(cprob);
-
-	mAc->Encode(low, high, total);
-}
-
-void PPMC::encode(std::string str, std::vector<double> * prob){
-
-	int total = alphabet_size;
-	int high = alphabet_size; 
-	int low = alphabet_size - 1;
-
-	double cprob = (double) (high - low) / total;
-	prob->push_back(cprob);
-
-	--alphabet_size;
-
-	//std::clog << "symbol: " << str << " - low = " << low << ", high = " << high << ", total = " << total << std::endl;
-}

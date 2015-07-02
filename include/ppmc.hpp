@@ -1,6 +1,7 @@
 #ifndef __PPMC_H
 #define __PPMC_H
 
+#include "entry.hpp"
 #include "node.hpp"
 #include "arithmeticcoderc.hpp"
 
@@ -8,7 +9,6 @@
 #include <string>		// std::string
 #include <cmath>		// std::string
 #include <vector>		// std::vector
-#include <algorithm>	// std::sort()
 
 class PPMC {
 private:
@@ -19,18 +19,15 @@ private:
 
 public:
 	PPMC(void);
-	PPMC(int);
 	PPMC(ArithmeticCoderC * ac);
 	~PPMC(void);
 	Node * getRoot(void);
-	int getAlphabet_size(void);
-	void setAlphabet_size(int);
+	int getAlphabetSize(void);
+	void setAlphabetSize(int);
 
-	void updateTree(std::string str, std::string ctx);
-	void getProb(Node * cnode, std::string str, std::string ctx, int level, int k, std::vector<double> * prob, std::vector<std::string> * del_symb);
-	void encode(std::string str, std::vector<double> * prob);
-	void encode(Node * cnode, std::string str, std::vector<double> * prob, std::vector<std::string> * del_symb);
-	void removeESC(void);
+	void Update(Entry entry);
+	void getProb(Node * cnode, Entry * entry);
+	void RemoveESC(void);
 };
 
 #endif
