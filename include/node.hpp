@@ -5,12 +5,16 @@
 #include <string>		// std::string
 #include <vector>		// std::vector
 #include <iostream>
+#include <algorithm>	// std::sort()
+
+#define ESC "ESC"
+
 
 class Node {
 private:
 	std::string name;
 	int frequency;
-	int childTotalFreq;
+	int children_freq;
 	std::map <std::string, Node*> children;
 	
 public:
@@ -24,11 +28,11 @@ public:
 	std::string getName(void);
 
 	int getFrequency(void);
-	int getChildTotalFreq(void);
-	void setChildTotalFreq(int);
 
-	std::vector<Node*> * CopyChildren(std::vector<std::string> * del_symb);
-	std::string updateContext(std::string ctx);
+	int getChildrenFreq(void);
+	void setChildrenFreq(int);
+
+	std::vector<Node*> * GetSortedChildren(std::vector<std::string> * del_symb);
 	void insertChild(std::string str);
 	void updateChildren(std::string str, std::string ctx, int k);
 	void updateFrequency(void);
