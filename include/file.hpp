@@ -15,7 +15,7 @@
 
 class File {
 private:
-	ArithmeticCoderC ac;
+	ArithmeticCoderC * ac;
 	std::fstream mSource;
 	std::fstream mTarget;
 

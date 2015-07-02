@@ -42,6 +42,7 @@ File::File(const char * filePath, const char * option)
 		std::snprintf(buf, sizeof buf, "Error: Unable to open '%s'%s", filePathOutput.c_str(), " file!");
 		throw std::invalid_argument(buf);
 	}
+	ac = new ArithmeticCoderC();
 }
 
 File::~File(void){}
@@ -82,7 +83,7 @@ void File::Encode(void)
 	std::string word = getEntireFile();
 	int size_word;
 	
-	Tree = new PPMC(&ac);
+	Tree = new PPMC(ac);
 	Tree->setAlphabetSize(alphabetSize);
 	size_word = word.size();
 	Entry *entry, original_entry;
@@ -119,9 +120,9 @@ void File::Compress(void)
 	std::clog << "# Compressing..." << std::endl;
 	
 	LoadFile();
-	ac.SetFile(&mTarget);	
+	ac->SetFile(&mTarget);	
 	Encode();
-	ac.EncodeFinish();
+	ac->EncodeFinish();
 
 	mSource.close();
 	mTarget.close();
@@ -132,8 +133,8 @@ void File::Extract(void)
 	std::clog << "# Extracting..." << std::endl;
 
 	LoadFile();
-	ac.SetFile(&mSource);
-	ac.DecodeStart();
+	ac->SetFile(&mSource);
+	ac->DecodeStart();
 	Decode();
 
 	mSource.close();
