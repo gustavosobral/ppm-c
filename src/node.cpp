@@ -35,7 +35,7 @@ int Node::getFrequency(void)
 	return frequency;
 }
 
-void Node::updateFrequency(void)
+void Node::UpdateFrequency(void)
 {
 	frequency = frequency + 1;
 }
@@ -65,24 +65,24 @@ bool compareNodes(Node* i, Node* j)
 	else return (i->getFrequency() > j->getFrequency());
 }
 
-std::vector<Node*> * Node::GetSortedChildren(std::vector<std::string> * del_symb)
+std::vector<Node*> Node::GetSortedChildren(std::vector<std::string> * del_symb)
 {
-	std::vector<Node*> *copy = new std::vector<Node*>;
+	std::vector<Node*> copy;
 
 	for(std::map<std::string, Node*>::iterator it = children.begin(); it != children.end(); it++)
 	{
-		copy->push_back(it->second);
+		copy.push_back(it->second);
 
 		if (it->first == ESC) continue;
 		else del_symb->push_back(it->first);
 	}
 
-	std::stable_sort(copy->begin(), copy->end(), compareNodes);
+	std::stable_sort(copy.begin(), copy.end(), compareNodes);
 
 	return copy;
 }
 
-void Node::insertChild(std::string str)
+void Node::InsertChild(std::string str)
 {
 	std::string new_name = name + str;
 
@@ -104,22 +104,33 @@ void Node::insertChild(std::string str)
 
 }
 
-void Node::updateChildren(std::string str, std::string ctx, int k)
+void Node::UpdateChildren(std::string str, std::string ctx, int k)
 {
 	if (k > 0)
 	{
 		std::string new_ctx = ctx.substr(0,1);
 		Node *cnode = children[new_ctx];
-		cnode->updateChildren(str, ctx.substr(1, ctx.size() - 1 ), k-1);
+		cnode->UpdateChildren(str, ctx.substr(1, ctx.size() - 1 ), k-1);
 	}
 
 	else
 	{
-		if (children.count(str) == 0)	insertChild(str);
+		if (children.count(str) == 0)	InsertChild(str);
 		else 
 		{
-			children[str]->updateFrequency();
+			children[str]->UpdateFrequency();
 			children_freq += 1;
 		}
+	}
+}
+
+void Node::DestructTree(void)
+{
+	if (children.empty()) return;
+	
+	for(std::map<std::string, Node*>::iterator it = children.begin(); it != children.end(); it++)
+	{
+		(it->second)->DestructTree();
+		delete it->second;
 	}
 }

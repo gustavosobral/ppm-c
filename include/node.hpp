@@ -32,11 +32,11 @@ public:
 	int getChildrenFreq(void);
 	void setChildrenFreq(int);
 
-	std::vector<Node*> * GetSortedChildren(std::vector<std::string> * del_symb);
-	void insertChild(std::string str);
-	void updateChildren(std::string str, std::string ctx, int k);
-	void updateFrequency(void);
-
+	std::vector<Node*> GetSortedChildren(std::vector<std::string> * del_symb);
+	void InsertChild(std::string str);
+	void UpdateChildren(std::string str, std::string ctx, int k);
+	void UpdateFrequency(void);
+	void DestructTree(void);
 };
 
 #endif

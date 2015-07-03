@@ -51,10 +51,10 @@ void PPMC::Update(Entry entry)
 
 	for (int i = ctx.size(); i > 0; i--)
 	{
-		root->updateChildren(str, ctx, i);
+		root->UpdateChildren(str, ctx, i);
 		ctx = ctx.substr(1,i-1);
 	}
-	root->updateChildren(str, "", 0);
+	root->UpdateChildren(str, "", 0);
 
 	if ((*root->getChildren()).count(ESC) && alphabet_size == 0) RemoveESC();
 }
@@ -74,11 +74,11 @@ void PPMC::SymbolIsNotChild(Node * cnode, Entry * entry)
 	else
 	{
 		entry->UpdateContext();
-		return getProb(root, entry);
+		return GetProbability(root, entry);
 	}
 }
 
-void PPMC::getProb(Node * cnode, Entry * entry)
+void PPMC::GetProbability(Node * cnode, Entry * entry)
 {
 	/* checks if the context of current node is equal to the context wanted */
 	if (cnode->getName() == entry->getContext())
@@ -100,6 +100,6 @@ void PPMC::getProb(Node * cnode, Entry * entry)
 	{	
 		std::string child = entry->NextChild();
 		Node *new_node = (*cnode->getChildren())[child];
-		return getProb(new_node, entry);
+		return GetProbability(new_node, entry);
 	}
 }
