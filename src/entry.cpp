@@ -119,7 +119,7 @@ int Entry::Encode(int alphabet_size, ArithmeticCoderC * mAc)
 	UpdateProb(*interval);
 
 	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
-	//std::clog << "symbol: " << symbol << " - low = " << low << ", high = " << high << ", total = " << high << std::endl;
+	std::clog << "symbol:" << symbol << " - low = " << low << ", high = " << high << ", total = " << high << std::endl;
 
 	delete interval;
 
@@ -148,7 +148,7 @@ void Entry::Encode(Node * cnode, ArithmeticCoderC * mAc)
 
 	UpdateProb(*interval);
 
-	//std::clog << "symbol: " << str << " - low = " << interval->getLow() << ", high = " << interval->getHigh() << ", total = " << interval->getTotal() << std::endl;
+	std::clog << "symbol: " << str << " - low = " << interval->getLow() << ", high = " << interval->getHigh() << ", total = " << interval->getTotal() << std::endl;
 
 	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
 
