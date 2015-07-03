@@ -3,6 +3,8 @@
 Interval::Interval()
 {
 	low = 0;
+	high = 0;
+	total = 0;
 }
 
 Interval::Interval(int l, int h, int t)

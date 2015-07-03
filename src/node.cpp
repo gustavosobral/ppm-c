@@ -65,13 +65,13 @@ bool compareNodes(Node* i, Node* j)
 	else return (i->getFrequency() > j->getFrequency());
 }
 
-std::vector<Node*> Node::GetSortedChildren(std::vector<std::string> * del_symb)
+std::vector<Node*> Node::GetSortedChildren(std::vector<std::string> del_symb_copy, std::vector<std::string> * del_symb)
 {
 	std::vector<Node*> copy;
 
 	for(std::map<std::string, Node*>::iterator it = children.begin(); it != children.end(); it++)
 	{
-		copy.push_back(it->second);
+		if (std::find(del_symb_copy.begin(), del_symb_copy.end(), it->first) == del_symb_copy.end()) copy.push_back(it->second);
 
 		if (it->first == ESC) continue;
 		else del_symb->push_back(it->first);
