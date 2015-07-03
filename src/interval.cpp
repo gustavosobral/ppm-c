@@ -48,8 +48,7 @@ void Interval::FindLowHigh(std::string str, std::vector<Node*> * children, Node 
 		{
 			high = low + (*it)->getFrequency();
 			break;
-		}
-		else
+		} else
 		{
 			low += (*it)->getFrequency();
 		}
