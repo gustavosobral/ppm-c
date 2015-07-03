@@ -26,6 +26,8 @@ static void usage(void)
 int main(int argc, char * argv[], char * envp[])
 {
 
+    clock_t tStart = clock();
+    
 	int i;
 	int cflag = 0;
 	int eflag = 0;
@@ -69,5 +71,6 @@ int main(int argc, char * argv[], char * envp[])
 		exit(1);
 	}
 
+	std::clog << "# Time taken to compress:" << (double)(clock() - tStart)/CLOCKS_PER_SEC << std::endl;
 	exit(0);
 }

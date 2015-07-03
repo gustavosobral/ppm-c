@@ -72,6 +72,8 @@ void ArithmeticCoderC::Encode(	const unsigned int low_count,
 							   								const unsigned int high_count, 
 							   								const unsigned int total       ) // total < 2^29
 {	
+	//std::clog << "AC: " << " - low = " << low_count << ", high = " << high_count << ", total = " << total << std::endl;
+
 	// Bereich in Schritte unterteilen
 	mStep = ( mHigh - mLow + 1 ) / total; // oben offenes intervall => +1
 

@@ -83,7 +83,6 @@ void File::Encode(void)
 	std::string str, ctx;
 	std::string word = getEntireFile();
 	int size_word;
-	static int counter = 0;
 	
 	Tree = new PPMC(ac);
 	Tree->setAlphabetSize(alphabetSize);
@@ -109,13 +108,12 @@ void File::Encode(void)
 		original_entry = *entry;
 		Tree->PPMC::GetProbability(Tree->getRoot(), entry);
 		Tree->PPMC::Update(original_entry);	
+		
 		delete entry->getProb();
 		delete entry->getDelSymb();
 		delete entry; 
-		counter++;
 	}
 
-	std::clog << "Counter = " << counter << std::endl;
 	Tree->getRoot()->DestructTree();
 	delete Tree;
 }

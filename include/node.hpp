@@ -5,7 +5,7 @@
 #include <string>		// std::string
 #include <vector>		// std::vector
 #include <iostream>
-#include <algorithm>	// std::sort()
+#include <algorithm>	// std::sort(), std::find()
 
 #define ESC "ESC"
 
@@ -32,7 +32,7 @@ public:
 	int getChildrenFreq(void);
 	void setChildrenFreq(int);
 
-	std::vector<Node*> GetSortedChildren(std::vector<std::string> * del_symb);
+	std::vector<Node*> GetSortedChildren(std::vector<std::string> del_symb_copy, std::vector<std::string> * del_symb);
 	void InsertChild(std::string str);
 	void UpdateChildren(std::string str, std::string ctx, int k);
 	void UpdateFrequency(void);

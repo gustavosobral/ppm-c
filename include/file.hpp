@@ -12,6 +12,7 @@
 #include <stdexcept>		//	std::invalid_argument()
 #include <sys/stat.h>		//	stat()
 #include <sys/types.h>		//	struct stat
+#include <time.h>
 
 class File {
 private:

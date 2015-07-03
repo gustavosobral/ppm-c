@@ -7,7 +7,7 @@ SRCDIR = src
 # CC for C, CXX for C++
 # CFLAGS for C, CXXFLAGS for C++, CPPFLAGS for both
 CXX :=	g++
-CXXFLAGS :=	-Wall
+CXXFLAGS :=	-Wall -g
 INCS := -I$(IDIR)/
 LIBS :=
 
