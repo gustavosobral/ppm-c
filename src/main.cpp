@@ -56,7 +56,7 @@ int main(int argc, char * argv[], char * envp[])
 			{
 				// Do compression
 				File * f = new File(argv[2], "C");
-				f->Compress();
+				f->Compress(atoi(argv[3]));
 			} else {
 				// Do extraction
 				File * f = new File(argv[2], "E");

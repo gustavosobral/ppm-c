@@ -23,7 +23,7 @@ private:
 	int alphabetSize;
 	std::string * entireFile;
 
-	void Encode(void);
+	void Encode(int k);
 	void Decode(void);
 
 	void LoadFile(void);
@@ -33,7 +33,7 @@ public:
 
 	std::string getEntireFile(void);
 
-	void Compress();
+	void Compress(int k);
 	void Extract();
 };
 

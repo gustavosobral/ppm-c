@@ -76,7 +76,7 @@ std::string File::getEntireFile(void)
 	return * entireFile;
 }
 
-void File::Encode(void)
+void File::Encode(int k)
 {
 	PPMC *Tree;
 	Entry original_entry;
@@ -93,18 +93,11 @@ void File::Encode(void)
 		Entry *entry;
 		str = word.substr(i, 1);
 
-		switch (i) 
-		{
-			case 0:		entry = new Entry(str, "");
-			   			break;
-			
-			case 1:		entry = new Entry(str, word.substr(0,1));
-						break;  
-			
-			default:	entry = new Entry(str, word.substr(i-2,2));	 
+		if (i-k <= 0) ctx = word.substr(0, i);
+		else ctx = word.substr(i-k, k);
 
-		}
-
+		entry = new Entry(str, ctx);
+			  
 		original_entry = *entry;
 		Tree->PPMC::GetProbability(Tree->getRoot(), entry);
 		Tree->PPMC::Update(original_entry);	
@@ -123,13 +116,13 @@ void File::Decode(void)
 	// [ToDo]
 }
 
-void File::Compress(void)
+void File::Compress(int k)
 {
 	std::clog << "# Compressing..." << std::endl;
 	
 	LoadFile();
 	ac->SetFile(&mTarget);	
-	Encode();
+	Encode(k);
 	ac->EncodeFinish();
 
 	mSource.close();
