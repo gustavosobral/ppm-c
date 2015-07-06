@@ -118,9 +118,9 @@ int Entry::Encode(int alphabet_size, ArithmeticCoderC * mAc)
 
 	UpdateProb(*interval);
 
-	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
 	//std::clog << "symbol:" << symbol << " - low = " << low << ", high = " << high << ", total = " << high << std::endl;
-
+	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
+	
 	delete interval;
 
 	return alphabet_size;
@@ -132,7 +132,7 @@ void Entry::Encode(Node * cnode, ArithmeticCoderC * mAc)
 	std::string str;
 	std::vector<std::string> del_symb_copy;
 	Interval *interval = new Interval();
-	std::vector<Node*> *children = new std::vector<Node*>;
+	std::vector<Node*> *sorted_children = new std::vector<Node*>;
 
 	str = ReturnSymbolOrESC();	// Returns which string will be encoded: an escape or a symbol
 
@@ -142,16 +142,15 @@ void Entry::Encode(Node * cnode, ArithmeticCoderC * mAc)
 
 	del_symb->clear();
 
-	*children = cnode->Node::GetSortedChildren(del_symb_copy, del_symb);
+	*sorted_children = cnode->Node::GetSortedChildren(del_symb_copy, del_symb);
 
-	interval->FindLowHigh(str, children, cnode);	
+	interval->FindLowHigh(str, sorted_children, cnode);	
 
 	UpdateProb(*interval);
 
 	//std::clog << "symbol: " << str << " - low = " << interval->getLow() << ", high = " << interval->getHigh() << ", total = " << interval->getTotal() << std::endl;
-
 	mAc->Encode(interval->getLow(), interval->getHigh(), interval->getTotal());
 
 	delete interval;
-	delete children;
+	delete sorted_children;
 }
