@@ -1,1 +1,0 @@
-g++ *.cc -o arith
