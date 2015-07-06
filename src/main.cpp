@@ -15,7 +15,7 @@ static void usage(void)
 	std::clog << "PPM-C version " << __version << std::endl;
 	std::clog << "Copyright (C) 2015 " << __authors << std::endl;
 	std::clog << std::endl;
-	std::clog << "Usage: 	" << __progname << " <command> <file>" << std::endl;
+	std::clog << "Usage: 	" << __progname << " <command> <file> <context_length>" << std::endl;
 	std::clog << std::endl;
 	std::clog << "<Commands>" << std::endl;
 	std::clog << " -c 		Compress file" << std::endl;

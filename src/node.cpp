@@ -52,7 +52,7 @@ void Node::setChildrenFreq(int n)
 
 bool compareNodes(Node* i, Node* j)
 {
-	/* sort by frequency, but if the frequencies are equal then it is sorted by alphabetical order */
+	// Sort nodes by frequency, but if the frequencies are equal then it is sorted by alphabetical order 
 	if (i->getFrequency() == j->getFrequency()) 
 	{
 		std::string last_char_i = i->getName();
@@ -69,6 +69,8 @@ std::vector<Node*> Node::GetSortedChildren(std::vector<std::string> del_symb_cop
 {
 	std::vector<Node*> copy;
 
+	/* Consult the vector of symbols deleted by exclusion rule before copying the respective node into the copy vector
+	also insert the symbols of nodes visited in the del_symb vector to apply exclusion rule to the next entry */
 	for(std::map<std::string, Node*>::iterator it = children.begin(); it != children.end(); it++)
 	{
 		if (std::find(del_symb_copy.begin(), del_symb_copy.end(), it->first) == del_symb_copy.end()) copy.push_back(it->second);
@@ -91,6 +93,7 @@ void Node::InsertChild(std::string str)
 	newNode->frequency += 1;
 	children_freq += 1;
 	
+	// If node has no "ESC" child, then creates a new "ESC" node, update frequencies and attach this ESC node as a child of newNode
 	if (children.count(ESC))
 	{
 		children[ESC]->frequency += 1;
@@ -106,6 +109,8 @@ void Node::InsertChild(std::string str)
 
 void Node::UpdateChildren(std::string str, std::string ctx, int k)
 {
+	/* Check if cnode is the wanted node by checking 'k'; if k > 0 then the context is updated
+	and  the tree is traveled down */
 	if (k > 0)
 	{
 		std::string new_ctx = ctx.substr(0,1);
@@ -113,6 +118,8 @@ void Node::UpdateChildren(std::string str, std::string ctx, int k)
 		cnode->UpdateChildren(str, ctx.substr(1, ctx.size() - 1 ), k-1);
 	}
 
+	/* Else k = 0, then its time to update tree with child data. Two situations: create a new child if 'str' 
+	doesnt represent a child yet or update frequencies if child was previously created */
 	else
 	{
 		if (children.count(str) == 0)	InsertChild(str);

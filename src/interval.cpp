@@ -35,23 +35,25 @@ void Interval::FindTotal(std::vector<std::string> del_symb, Node * cnode)
 {
 	total = cnode->getChildrenFreq(); 
 
+	// Exclude frequencies of symbols deleted by exclusion rule from total 
 	for(std::vector<std::string>::iterator it = del_symb.begin(); it != del_symb.end(); it++)
 	{
-		//std::clog << "deleted: " << *it << std::endl;
 		total -= (*cnode->getChildren())[*it]->getFrequency(); 
 	}
 }
 
-void Interval::FindLowHigh(std::string str, std::vector<Node*> * children, Node * cnode)
+void Interval::FindLowHigh(std::string str, std::vector<Node*> * sorted_children, Node * cnode)
 {
-	for(std::vector<Node*>::iterator it = children->begin(); it != children->end(); it++)
+
+	/* Increment low until cnode is found in the vector of sorted children. When cnode is found, calculate high
+	by adding its frequency to low value */
+	for(std::vector<Node*>::iterator it = sorted_children->begin(); it != sorted_children->end(); it++)
 	{
 		if (*it == (*cnode->getChildren())[str]) 
 		{
 			high = low + (*it)->getFrequency();
 			break;
-		} else
-		{
+		} else {
 			low += (*it)->getFrequency();
 		}
 	}
